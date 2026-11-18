@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 import dotenv
-from .env import get_required, get_bool, get_list
+from .env import get_required, get_bool, get_list, five_diffrent_chars, is_weak_secret
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,24 +31,12 @@ DEBUG = get_bool("DEBUG",False)
 ALLOWED_HOSTS = get_list("ALLOWED_HOSTS",[])
 
 
-def five_diffrent_chars(key):
-    chars = list(key.lower())
-    count = 0
-    l1 = []
-    for item in chars :
-        if item not in l1:
-            count += 1
-            l1.append(item)
-            if( count >= 5) :
-                return count
-    return count        
-
-
+     
 if (not DEBUG):
      if (len(ALLOWED_HOSTS) == 0) :
-        raise ImproperlyConfigured(f"La liste des hosts ne doit pas etre vide en production")
-     if(len(SECRET_KEY) < 50 or SECRET_KEY.startswith("django-insecure") or five_diffrent_chars(SECRET_KEY) < 5 ) :
-        raise ImproperlyConfigured(f"La clé secret n'est pas conforme au critéres W009")
+        raise ImproperlyConfigured("La liste des hosts ne doit pas etre vide en production")
+     if is_weak_secret(SECRET_KEY):
+        raise ImproperlyConfigured("La clé secret n'est pas conforme au critéres W009")
 
 
 

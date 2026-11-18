@@ -27,3 +27,10 @@ def get_list(name : str, default : list) -> list :
     value = [host.strip() for host in value if host.strip() != ""]
     return value if len(value) > 0 else default
 
+def five_diffrent_chars(key):
+    chars = set(key)
+    return len(chars)
+
+def is_weak_secret(key):
+    if(len(key) < 50 or key.startswith("django-insecure") or five_diffrent_chars(key) < 5) :
+        return True
