@@ -43,18 +43,11 @@ def five_diffrent_chars(key):
                 return count
     return count        
 
-def check_insecure(key):
-    try:
-        result = SECRET_KEY.index("django-insecure") == 0
-    except :
-        return False   
-    else :
-        return result
 
 if (not DEBUG):
      if (len(ALLOWED_HOSTS) == 0) :
         raise ImproperlyConfigured(f"La liste des hosts ne doit pas etre vide en production")
-     if(len(SECRET_KEY) < 50 or check_insecure(SECRET_KEY) or five_diffrent_chars(SECRET_KEY) < 5 ) :
+     if(len(SECRET_KEY) < 50 or SECRET_KEY.startswith("django-insecure") or five_diffrent_chars(SECRET_KEY) < 5 ) :
         raise ImproperlyConfigured(f"La clé secret n'est pas conforme au critéres W009")
 
 
