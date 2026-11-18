@@ -13,10 +13,12 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from pathlib import Path
 import dotenv
 from .env import get_required, get_bool, get_list
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv.load_dotenv(f"{BASE_DIR}/.env")
+dotenv.load_dotenv(BASE_DIR / ".env")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
@@ -26,7 +28,35 @@ SECRET_KEY = get_required("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_bool("DEBUG",False)
 
-ALLOWED_HOSTS = get_list("ALLOWED_HOSTS",["localhost"])
+ALLOWED_HOSTS = get_list("ALLOWED_HOSTS",[])
+
+
+def five_diffrent_chars(key):
+    chars = list(key.lower())
+    count = 0
+    l1 = []
+    for item in chars :
+        if item not in l1:
+            count += 1
+            l1.append(item)
+            if( count >= 5) :
+                return count
+    return count        
+
+def check_insecure(key):
+    try:
+        result = SECRET_KEY.index("django-insecure") == 0
+    except :
+        return False   
+    else :
+        return result
+
+if (not DEBUG):
+     if (len(ALLOWED_HOSTS) == 0) :
+        raise ImproperlyConfigured(f"La liste des hosts ne doit pas etre vide en production")
+     if(len(SECRET_KEY) < 50 or check_insecure(SECRET_KEY) or five_diffrent_chars(SECRET_KEY) < 5 ) :
+        raise ImproperlyConfigured(f"La clé secret n'est pas conforme au critéres W009")
+
 
 
 # Application definition

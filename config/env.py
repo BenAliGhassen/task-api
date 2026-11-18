@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 def get_required(name : str) -> str:
     required = os.environ.get(name)
-    if required is None:
+    if (required is None or required.strip() == ""):
         raise ImproperlyConfigured(f"The {name} environment variable is required")
     return required
 
@@ -24,6 +24,6 @@ def get_list(name : str, default : list) -> list :
     if raw_value is None :
         return default
     value = str(raw_value).split(",")
-    value = [host.strip() for host in value]
+    value = [host.strip() for host in value if host.strip() != ""]
     return value if len(value) > 0 else default
 
