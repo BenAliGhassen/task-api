@@ -30,7 +30,7 @@ DEBUG = get_bool("DEBUG",False)
 
 ALLOWED_HOSTS = get_list("ALLOWED_HOSTS",[])
 
-
+AUTH_USER_MODEL = "accounts.User"
      
 if (not DEBUG):
      if (len(ALLOWED_HOSTS) == 0) :
@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tasks'
+    'tasks',
+    'accounts',
 ]
 
 MIDDLEWARE = [

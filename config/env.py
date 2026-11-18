@@ -34,3 +34,4 @@ def five_diffrent_chars(key):
 def is_weak_secret(key):
     if(len(key) < 50 or key.startswith("django-insecure") or five_diffrent_chars(key) < 5) :
         return True
+    return False
